@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Items List - Express</title>
+    <!-- Latest compiled and minified CSS & JS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="jumbotron">
+        <h1>Inventory Express</h1>
+        <h3>Easy Add and View Items</h3>
+        <hr />
+        <a href="/add">
+          <button class="btn btn-danger btn-lg">
+            <span class="fa fa-plus"></span> Add New Item
+          </button>
+        </a>
+        <a href="/api/characters">
+          <button class="btn btn-danger btn-lg">
+            <span class="fa fa-eye"></span> All Items
+          </button>
+        </a>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h3><strong>Item Search</strong></h3>
+            </div>
+            <div class="card-body">
+              <input type="text" id="character-search" class="form-control" />
+              <br />
+              <div class="text-right">
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-md"
+                  id="search-btn">
+                  <span class="fa fa-search"></span> Search Your Items
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3><strong>Item Details</strong></h3>
+            </div>
+            <div class="card-body">
+              <h2 id="name">Coffee</h2>
+              <div id="details" style="display: none;">
+                <h3>
+                  <strong>Brand:</strong> <span id="brand">Bustelo</span>
+                </h3>
+                <h3><strong>Quantity:</strong> <span id="qty">lb</span></h3>
+                <h3>
+                  <strong>In Stock:</strong>
+                  <span id="in-stock">2000</span>
+                </h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      const searchBtn = document.getElementById('search-btn');
+      const statsEl = document.getElementById('details');
+      const nameEl = document.getElementById('name');
+      const roleEl = document.getElementById('brand');
+      const ageEl = document.getElementById('qty');
+      const fpEl = document.getElementById('in-stock');
+
+      searchBtn.addEventListener('click', () => {
+        let searchedCharacter = document
+          .getElementById('character-search')
+          .value.trim();
+
+        // Using a RegEx Pattern to remove spaces from searchedCharacter
+        // You can read more about RegEx Patterns later https://www.regexbuddy.com/regex.html
+        searchedCharacter = searchedCharacter.replace(/\s+/g, '').toLowerCase();
+
+        fetch(`/api/characters/${searchedCharacter}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            const { name, brand, qty, inStock } = data;
+
+            if (data) {
+              statsEl.setAttribute('style', 'display: inline');
+              nameEl.textContent = name;
+              roleEl.textContent = brand;
+              ageEl.textContent = qty;
+              fpEl.textContent = inStock;
+            } else {
+              nameEl.textContent =
+                "Seems like you're all done with this one. Your Item was not found.";
+                statsEl.setAttribute('style', 'display: none');
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      });
+    </script>
+  </body>
+</html>
