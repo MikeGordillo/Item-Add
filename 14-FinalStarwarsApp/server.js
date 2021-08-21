@@ -25,7 +25,7 @@ const characters = [
   {
     routeName: 'ron',
     name: 'Ron',
-    brand: 'Matuzalem',
+    brand: 'Matusalem',
     qty: 32,
     inStock: 12,
   },
